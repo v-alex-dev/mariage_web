@@ -1,0 +1,26 @@
+/* globals.css */
+:root {
+  /* === BACKGROUNDS === */
+  --home-hero-bg: ...;
+  --our-story-bg: ...;
+  --details-bg: ...;
+  --rsvp-bg: ...;
+  --music-bg: ...;
+  --footer-bg: ...;
+  --card-bg: ...;
+
+  /* === TEXTES === */
+  --text-primary: ...;
+  --text-secondary: ...;
+  --text-on-dark: ...;
+
+  /* === ACCENTS === */
+  --accent-primary: ...;
+  --accent-hover: ...;
+  --button-bg: ...;
+  --button-text: ...;
+
+  /* === TYPO === */
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-sans: 'Jost', sans-serif;
+}
