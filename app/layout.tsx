@@ -1,21 +1,38 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Cormorant_Garamond, Jost } from 'next/font/google';
 import './globals.css';
 import Navbar from './components/layout/Navbar';
+import Footer from './components/layout/Footer';
+// import ColorCustomizer from './components/layout/ColorCustomizer';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const cormorant = Cormorant_Garamond({
+  variable: '--font-serif',
   subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  display: 'swap',
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const jost = Jost({
+  variable: '--font-sans',
   subsets: ['latin'],
+  weight: ['300', '400', '500'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'Notre Mariage',
-  description: "Voici la présentation de l'événement de notre mariage.",
+  title: {
+    default: 'Jenny & Jason — September 20, 2025',
+    template: '%s | Jenny & Jason',
+  },
+  description:
+    'Join us for our wedding celebration at The Golden Elm Manor, St. Augustine, New York on Saturday, September 20, 2025.',
+  openGraph: {
+    title: 'Jenny & Jason — September 20, 2025',
+    description:
+      'Join us for our wedding celebration at The Golden Elm Manor, St. Augustine, New York.',
+    type: 'website',
+    locale: 'en_US',
+  },
 };
 
 export default function RootLayout({
@@ -23,11 +40,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isDev = process.env.NODE_ENV !== 'production';
+
   return (
-    <html lang="fr" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
-        <Navbar></Navbar>
-        {children}
+    <html lang="fr" className={`${cormorant.variable} ${jost.variable} h-full antialiased`}>
+      <body className="flex min-h-full flex-col">
+        <Navbar />
+        <main className="flex-1">{children}</main>
+        <Footer />
+        {/* {isDev && <ColorCustomizer />} */}
       </body>
     </html>
   );
