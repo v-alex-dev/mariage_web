@@ -193,7 +193,10 @@ function Toast({ message, visible }: ToastProps) {
 
 export default function ColorCustomizer() {
   const [isOpen, setIsOpen] = useState(false);
-  const [colors, setColors] = useState<Partial<ColorMap>>({});
+  // Lazy initializer: runs once on mount, never triggers a cascading render.
+  // loadFromStorage() is safe here — the component is client-only,
+  // guarded by the `mounted` check below.
+  const [colors, setColors] = useState<Partial<ColorMap>>(loadFromStorage);
   const [toastMsg, setToastMsg] = useState('');
   const [toastVisible, setToastVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -201,10 +204,10 @@ export default function ColorCustomizer() {
   const fabRef = useRef<HTMLButtonElement>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Load from storage on mount + apply all to DOM
+  // Apply stored colors to the DOM and mark as mounted.
+  // No setState here — only DOM side-effects, the correct use of an effect.
   useEffect(() => {
     const stored = loadFromStorage();
-    setColors(stored);
     ALL_VARS.forEach((v) => {
       applyToDOM(v.key, stored[v.key as CssColorVar] ?? v.default);
     });
