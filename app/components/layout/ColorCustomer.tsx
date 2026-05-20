@@ -91,32 +91,43 @@ interface ColorRowProps {
 }
 
 function ColorRow({ cssKey, label, description, value, onChange }: ColorRowProps) {
-  const [hexInput, setHexInput] = useState(value.toUpperCase());
+  // Track whether the user is actively typing in the hex field.
+  // We use a ref (not state) so we never trigger a re-render ourselves —
+  // the parent's value prop is the single source of truth.
+  const isTypingRef = useRef(false);
+  const hexFieldRef = useRef<HTMLInputElement>(null);
 
-  // Sync external changes (e.g. reset)
+  // When value changes from outside (e.g. reset), push it into the DOM
+  // input directly — no setState, no effect.
   useEffect(() => {
-    setHexInput(value.toUpperCase());
-  }, [value]);
+    if (!isTypingRef.current && hexFieldRef.current) {
+      hexFieldRef.current.value = value.toUpperCase();
+    }
+  });
 
   const handleColorPicker = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    setHexInput(val.toUpperCase());
+    // Keep the hex field in sync with the native color picker
+    if (hexFieldRef.current) {
+      hexFieldRef.current.value = val.toUpperCase();
+    }
     onChange(cssKey, val);
   };
 
   const handleHexInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    isTypingRef.current = true;
     let val = e.target.value.trim();
     if (!val.startsWith('#')) val = '#' + val;
-    setHexInput(val.toUpperCase());
     if (isValidHex(val)) {
       onChange(cssKey, val);
     }
   };
 
   const handleHexBlur = () => {
-    // Restore valid value if hex is invalid on blur
-    if (!isValidHex(hexInput)) {
-      setHexInput(value.toUpperCase());
+    isTypingRef.current = false;
+    // Restore the last valid value if the field contains an invalid hex
+    if (hexFieldRef.current && !isValidHex(hexFieldRef.current.value)) {
+      hexFieldRef.current.value = value.toUpperCase();
     }
   };
 
@@ -125,7 +136,7 @@ function ColorRow({ cssKey, label, description, value, onChange }: ColorRowProps
       {/* Swatch + color picker invisible */}
       <div
         className="color-swatch"
-        style={{ backgroundColor: isValidHex(hexInput) ? hexInput : value }}
+        style={{ backgroundColor: isValidHex(value) ? value : '#000000' }}
         title="Cliquer pour choisir"
       >
         <input
@@ -143,10 +154,11 @@ function ColorRow({ cssKey, label, description, value, onChange }: ColorRowProps
         <span className="color-desc">{description}</span>
       </div>
 
-      {/* Hex input */}
+      {/* Hex input — uncontrolled, driven via ref */}
       <input
+        ref={hexFieldRef}
         type="text"
-        value={hexInput}
+        defaultValue={value.toUpperCase()}
         onChange={handleHexInput}
         onBlur={handleHexBlur}
         maxLength={7}
