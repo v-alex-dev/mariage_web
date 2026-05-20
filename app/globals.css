@@ -234,3 +234,383 @@ img {
   );
   opacity: 0.45;
 }
+
+/* ColorCustomer */
+/* ============================================================
+   COLOR CUSTOMIZER — Styles à ajouter dans globals.css
+   (ou dans un fichier colorCustomizer.css importé dans le layout)
+   ============================================================ */
+
+/* ── FAB ── */
+.customizer-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 9999;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: var(--footer-bg, #3d4035);
+  color: var(--text-on-dark, #faf8f5);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.22),
+    0 1px 4px rgba(0, 0, 0, 0.12);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.customizer-fab:hover {
+  transform: scale(1.07);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+  background-color: var(--accent-hover, #6b6550);
+}
+
+.customizer-fab:focus-visible {
+  outline: 2px solid var(--accent-primary, #8b8468);
+  outline-offset: 3px;
+}
+
+/* ── Overlay ── */
+.customizer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 9997;
+  backdrop-filter: blur(2px);
+  animation: overlayIn 0.25s ease forwards;
+}
+
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Drawer ── */
+.customizer-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 360px;
+  height: 100%;
+  background-color: var(--our-story-bg, #faf8f5);
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.36s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.12);
+}
+
+.customizer-drawer--open {
+  transform: translateX(0);
+}
+
+.customizer-drawer:focus {
+  outline: none;
+}
+
+@media (max-width: 420px) {
+  .customizer-drawer {
+    width: 100%;
+  }
+}
+
+/* ── Header ── */
+.customizer-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 22px 20px 18px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  flex-shrink: 0;
+  background-color: var(--our-story-bg, #faf8f5);
+}
+
+.customizer-header__title {
+  font-family: var(--font-serif, 'Cormorant Garamond', serif);
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--text-primary, #1a1a1a);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+.customizer-header__sub {
+  font-family: var(--font-sans, 'Jost', sans-serif);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-secondary, #6b6560);
+  margin-top: 4px;
+}
+
+.customizer-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  color: var(--text-secondary, #6b6560);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 0.2s;
+  margin-top: -2px;
+}
+
+.customizer-close:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.customizer-close:focus-visible {
+  outline: 2px solid var(--accent-primary, #8b8468);
+  outline-offset: 2px;
+}
+
+/* ── Body ── */
+.customizer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 20px 16px;
+  overscroll-behavior: contain;
+}
+
+.customizer-body::-webkit-scrollbar {
+  width: 3px;
+}
+
+.customizer-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.customizer-body::-webkit-scrollbar-thumb {
+  background: var(--accent-primary, #8b8468);
+  border-radius: 2px;
+  opacity: 0.4;
+}
+
+/* ── Section label ── */
+.customizer-section-label {
+  font-family: var(--font-sans, 'Jost', sans-serif);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-primary, #8b8468);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 24px 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--home-grid-bg, #f5f2ed);
+}
+
+.customizer-section-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Color row ── */
+.color-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--home-grid-bg, #f5f2ed);
+}
+
+.color-row:last-child {
+  border-bottom: none;
+}
+
+/* Swatch */
+.color-swatch {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+
+.color-swatch:hover {
+  transform: scale(1.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+/* The actual <input type="color"> is hidden under the swatch */
+.color-picker-input {
+  position: absolute;
+  inset: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.color-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.color-label {
+  font-family: var(--font-sans, 'Jost', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-primary, #1a1a1a);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.color-desc {
+  font-family: var(--font-sans, 'Jost', sans-serif);
+  font-size: 0.65rem;
+  color: var(--text-secondary, #6b6560);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Hex input */
+.hex-field {
+  width: 78px;
+  font-size: 0.7rem;
+  font-family: 'Courier New', 'Fira Mono', monospace;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 6px;
+  padding: 6px 7px;
+  background: #fff;
+  color: var(--text-primary, #1a1a1a);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.hex-field:focus {
+  outline: none;
+  border-color: var(--accent-primary, #8b8468);
+  box-shadow: 0 0 0 2px rgba(139, 132, 104, 0.18);
+}
+
+/* ── Footer ── */
+.customizer-footer {
+  padding: 16px 20px 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  flex-shrink: 0;
+  background-color: var(--our-story-bg, #faf8f5);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+/* ── Buttons ── */
+.customizer-btn {
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: 8px;
+  font-family: var(--font-sans, 'Jost', sans-serif);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  text-align: center;
+}
+
+.customizer-btn--primary {
+  background-color: var(--footer-bg, #3d4035);
+  color: var(--text-on-dark, #faf8f5);
+}
+
+.customizer-btn--primary:hover {
+  background-color: var(--accent-hover, #6b6550);
+}
+
+.customizer-btn--secondary {
+  background-color: transparent;
+  color: var(--text-primary, #1a1a1a);
+  border: 1.5px solid rgba(0, 0, 0, 0.2);
+}
+
+.customizer-btn--secondary:hover {
+  background-color: var(--card-bg, #f0ece4);
+}
+
+.customizer-btn--ghost {
+  background-color: transparent;
+  color: var(--text-secondary, #6b6560);
+  font-size: 0.62rem;
+  padding: 7px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.customizer-btn--ghost:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  color: var(--text-primary, #1a1a1a);
+}
+
+.customizer-btn:focus-visible {
+  outline: 2px solid var(--accent-primary, #8b8468);
+  outline-offset: 2px;
+}
+
+/* ── Toast ── */
+.customizer-toast {
+  position: fixed;
+  bottom: 92px;
+  right: 28px;
+  z-index: 10000;
+  background-color: var(--footer-bg, #3d4035);
+  color: var(--text-on-dark, #faf8f5);
+  font-family: var(--font-sans, 'Jost', sans-serif);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  padding: 10px 16px;
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.customizer-toast--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
