@@ -3,6 +3,8 @@ import { Cormorant_Garamond, Jost } from 'next/font/google';
 import './globals.css';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+import ColorCustomizerLoader from './components/layout/colorCustomerLoading';
+
 // import ColorCustomizer from './components/layout/ColorCustomizer';
 
 const cormorant = Cormorant_Garamond({
@@ -46,6 +48,7 @@ export default function RootLayout({
     <html lang="fr" className={`${cormorant.variable} ${jost.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <Navbar />
+        <ColorCustomizerLoader />
         <main className="flex-1">{children}</main>
         <Footer />
         {/* {isDev && <ColorCustomizer />} */}
