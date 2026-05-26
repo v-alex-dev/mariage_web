@@ -61,7 +61,7 @@ export default function HomePage() {
         <div className="relative z-10 flex flex-col items-center gap-6 px-6 text-center">
           {/* Monogramme discret au-dessus */}
           <span className="font-serif text-sm tracking-[0.5em] uppercase text-white/70">
-            J &amp; J
+            S &amp; N
           </span>
 
           {/* Titre principal */}
@@ -171,7 +171,7 @@ export default function HomePage() {
         className="bg-[var(--home-hero-bg)] px-6 py-24 flex flex-col items-center text-center gap-8"
         aria-label="Introduction"
       >
-        <div className="flex items-center gap-4" aria-hidden="true">
+        <div className="flex items-center gap-4 my-2" aria-hidden="true">
           <div className="h-px w-12 bg-[var(--accent-primary)]" />
           <span className="font-sans text-xs tracking-[0.4em] uppercase text-[var(--text-secondary)]">
             ✦
