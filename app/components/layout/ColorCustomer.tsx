@@ -195,23 +195,26 @@ export default function ColorCustomizer() {
   const [isOpen, setIsOpen] = useState(false);
   // Lazy initializer: runs once on mount, never triggers a cascading render.
   // loadFromStorage() is safe here — the component is client-only,
-  // guarded by the `mounted` check below.
   const [colors, setColors] = useState<Partial<ColorMap>>(loadFromStorage);
   const [toastMsg, setToastMsg] = useState('');
   const [toastVisible, setToastVisible] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
   const fabRef = useRef<HTMLButtonElement>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Apply stored colors to the DOM and mark as mounted.
-  // No setState here — only DOM side-effects, the correct use of an effect.
+  // closeDrawer déclaré avant les effects qui l'utilisent
+  const closeDrawer = useCallback(() => {
+    setIsOpen(false);
+    fabRef.current?.focus();
+  }, []);
+
+  // Apply stored colors to the DOM on first render.
+  // Pure DOM side-effect — no setState, no cascading renders.
   useEffect(() => {
     const stored = loadFromStorage();
     ALL_VARS.forEach((v) => {
       applyToDOM(v.key, stored[v.key as CssColorVar] ?? v.default);
     });
-    setMounted(true);
   }, []);
 
   // Trap focus inside drawer when open
@@ -228,7 +231,7 @@ export default function ColorCustomizer() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [isOpen]);
+  }, [isOpen, closeDrawer]);
 
   // Prevent body scroll when open
   useEffect(() => {
@@ -305,14 +308,6 @@ export default function ColorCustomizer() {
       showToast("Copie non supportée — utilisez l'export");
     }
   };
-
-  const closeDrawer = () => {
-    setIsOpen(false);
-    fabRef.current?.focus();
-  };
-
-  // Don't render on server (uses localStorage + document)
-  if (!mounted) return null;
 
   return (
     <>
