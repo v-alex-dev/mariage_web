@@ -1,31 +1,5 @@
 import Link from 'next/link';
-
-const gridItems = [
-  {
-    href: '/our-story',
-    label: 'Our Story',
-    bg: '#c8c4b8',
-    description: 'How it all began',
-  },
-  {
-    href: '/details',
-    label: 'The Details',
-    bg: '#3d4035',
-    description: 'Everything you need to know',
-  },
-  {
-    href: '/music',
-    label: 'Music',
-    bg: '#8b8468',
-    description: 'Add your song to the playlist',
-  },
-  {
-    href: '/details#travel',
-    label: 'Travel & Stay',
-    bg: '#6b7c6b',
-    description: 'Getting there & where to sleep',
-  },
-];
+import { HOME } from '@/app/content/home';
 
 export default function HomePage() {
   return (
@@ -61,7 +35,7 @@ export default function HomePage() {
         <div className="relative z-10 flex flex-col items-center gap-6 px-6 text-center">
           {/* Monogramme discret au-dessus */}
           <span className="font-serif text-sm tracking-[0.5em] uppercase text-white/70">
-            S &amp; N
+            {HOME.hero.eyebrow}
           </span>
 
           {/* Titre principal */}
@@ -69,7 +43,7 @@ export default function HomePage() {
             className="font-serif text-white leading-none tracking-tight"
             style={{ fontSize: 'clamp(3rem, 10vw, 9rem)', fontWeight: 300 }}
           >
-            Sophie &amp; Nathan
+            {HOME.hero.title}
           </h1>
 
           {/* Séparateur */}
@@ -82,9 +56,11 @@ export default function HomePage() {
           {/* Date & lieu */}
           <div className="flex flex-col items-center gap-2">
             <p className="font-sans text-xs tracking-[0.35em] uppercase text-white/80">
-              Un jour en mai
+              {HOME.hero.dateLine}
             </p>
-            <p className="font-sans text-xs tracking-[0.2em] uppercase text-white/60">In Belgium</p>
+            <p className="font-sans text-xs tracking-[0.2em] uppercase text-white/60">
+              {HOME.hero.locationLine}
+            </p>
           </div>
 
           {/* Invitation */}
@@ -92,7 +68,7 @@ export default function HomePage() {
             className="mt-4 max-w-md font-serif text-lg italic text-white/80 leading-relaxed"
             style={{ fontWeight: 300 }}
           >
-            With love and gratitude, we invite you to share in the joy of our wedding day.
+            {HOME.hero.invitation}
           </p>
         </div>
 
@@ -114,14 +90,14 @@ export default function HomePage() {
       {/* ── GRILLE DE NAVIGATION ── */}
       <section className="bg-[var(--home-grid-bg)]" aria-label="Navigation par section">
         <div className="grid grid-cols-1 sm:grid-cols-2">
-          {gridItems.map(({ href, label, bg, description }) => (
+          {HOME.grid.map(({ href, label, bg, description }) => (
             <Link
               key={href}
               href={href}
               className="group relative flex items-end overflow-hidden"
               style={{ minHeight: 'clamp(240px, 35vw, 420px)' }}
             >
-              {/* Placeholder coloré */}
+              {/* Placeholder coloré — sera remplacé par next/image dès que imageSrc est renseigné */}
               <div
                 className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
                 style={{
@@ -184,8 +160,7 @@ export default function HomePage() {
             className="font-serif italic text-[var(--text-primary)] leading-relaxed"
             style={{ fontSize: 'clamp(1.25rem, 3vw, 1.75rem)', fontWeight: 300 }}
           >
-            &ldquo;We were stoked to start this next chapter with you. Onward and upward to the next
-            adventure!&rdquo;
+            &ldquo;{HOME.quote}&rdquo;
           </p>
         </blockquote>
 
