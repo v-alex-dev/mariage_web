@@ -14,41 +14,43 @@ export const HOME: HomeContent = {
     eyebrow: 'S & N',
     title: SITE.coupleNames.full,
     dateLine: 'Un jour en mai',
-    locationLine: 'In Belgium',
-    invitation: 'With love and gratitude, we invite you to share in the joy of our wedding day.',
+    locationLine: 'En Belgique',
+    invitation: 'Avec amour et gratitude, nous vous invitons à partager la joie de notre mariage.',
   },
 
+  // Les `label` restent en anglais (titres de navigation, choix de style),
+  // seules les descriptions sont traduites en français.
   grid: [
     {
       href: '/our-story',
       label: 'Our Story',
-      description: 'How it all began',
+      description: 'Comment tout a commencé',
       bg: '#c8c4b8',
       // imageSrc: '/images/home-our-story.jpg', // TODO: à activer dès réception de la photo
     },
     {
       href: '/details',
       label: 'The Details',
-      description: 'Everything you need to know',
+      description: 'Tout ce qu\u2019il faut savoir',
       bg: '#3d4035',
       // imageSrc: '/images/home-details.jpg',
     },
     {
       href: '/music',
       label: 'Music',
-      description: 'Add your song to the playlist',
+      description: 'Ajoutez votre chanson à la playlist',
       bg: '#8b8468',
       // imageSrc: '/images/home-music.jpg',
     },
     {
       href: '/details#travel',
       label: 'Travel & Stay',
-      description: 'Getting there & where to sleep',
+      description: 'Comment s\u2019y rendre & où dormir',
       bg: '#6b7c6b',
       // imageSrc: '/images/home-travel.jpg',
     },
   ],
 
   quote:
-    'We were stoked to start this next chapter with you. Onward and upward to the next adventure!',
+    'Nous sommes ravis de commencer ce nouveau chapitre avec vous. En avant, et vers le haut, pour la prochaine aventure !',
 };
