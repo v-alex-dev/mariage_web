@@ -4,6 +4,7 @@ import './globals.css';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ColorCustomizerLoader from './components/layout/colorCustomerLoading';
+import { SITE } from '@/app/content/site';
 
 // import ColorCustomizer from './components/layout/ColorCustomizer';
 
@@ -22,18 +23,19 @@ const jost = Jost({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE.seo.canonicalUrl),
   title: {
-    default: 'Jenny & Jason — September 20, 2025',
-    template: '%s | Jenny & Jason',
+    default: SITE.seo.defaultTitle,
+    template: SITE.seo.titleTemplate,
   },
-  description:
-    'Join us for our wedding celebration at The Golden Elm Manor, St. Augustine, New York on Saturday, September 20, 2025.',
+  description: SITE.seo.description,
   openGraph: {
-    title: 'Jenny & Jason — September 20, 2025',
-    description:
-      'Join us for our wedding celebration at The Golden Elm Manor, St. Augustine, New York.',
+    title: SITE.seo.defaultTitle,
+    description: SITE.seo.description,
     type: 'website',
-    locale: 'en_US',
+    locale: 'fr_BE',
+    // TODO: ajouter public/og-image.jpg (1200×630) une fois disponible
+    // images: [{ url: '/og-image.jpg', width: 1200, height: 630 }],
   },
 };
 

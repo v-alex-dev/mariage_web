@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { SITE } from '@/app/content/site';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -52,9 +53,9 @@ export default function Navbar() {
           <Link
             href="/"
             className="font-serif text-xl tracking-widest text-[var(--text-primary)] hover:opacity-70 transition-opacity duration-200 select-none"
-            aria-label="Retour à l'accueil — Sophie & Nathan"
+            aria-label={`Retour à l'accueil — ${SITE.coupleNames.full}`}
           >
-            S&amp;N
+            {SITE.coupleNames.monogram}
           </Link>
 
           {/* Liens desktop */}
@@ -157,7 +158,7 @@ export default function Navbar() {
 
         {/* Date discrète en bas du menu mobile */}
         <p className="absolute bottom-10 text-xs tracking-[0.2em] text-[var(--text-secondary)] font-sans uppercase">
-          Insérer date ici
+          {SITE.weddingDate.display}
         </p>
       </div>
     </>

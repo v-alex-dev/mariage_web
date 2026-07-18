@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { SITE } from '@/app/content/site';
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
@@ -25,9 +26,9 @@ export default function Footer() {
         <span
           className="mb-2 leading-none tracking-widest"
           style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2rem, 5vw, 2.75rem)' }}
-          aria-label="Jenny and Jason monogram"
+          aria-label={`${SITE.coupleNames.full} monogram`}
         >
-          S&amp;N
+          {SITE.coupleNames.monogram}
         </span>
 
         {/* Date */}
@@ -35,7 +36,7 @@ export default function Footer() {
           className="m-0 text-[0.65rem] uppercase tracking-[0.22em] opacity-90"
           style={{ fontFamily: 'var(--font-sans)' }}
         >
-          Un jour, Mai&nbsp;??,&nbsp;2027
+          {SITE.weddingDate.display}
         </p>
 
         {/* Venue */}
@@ -43,7 +44,9 @@ export default function Footer() {
           className="m-0 text-[0.7rem] uppercase tracking-[0.12em] opacity-50"
           style={{ fontFamily: 'var(--font-sans)' }}
         >
-          dans un lieu en belgique
+          {SITE.venue.nameUnknown
+            ? `dans un lieu en ${SITE.venue.city}`
+            : `${SITE.venue.name}, ${SITE.venue.city}`}
         </p>
 
         {/* Nav */}
