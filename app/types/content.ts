@@ -110,3 +110,51 @@ export interface HomeContent {
   /** Citation affichée dans la section intro, en bas de la home */
   quote: string;
 }
+
+// ============================================================
+//  Contenu de la page Our Story — app/content/ourStory.ts
+// ============================================================
+
+export interface OurStoryPhoto {
+  /** Identifiant unique, utilisé comme React key */
+  id: string;
+  /**
+   * Chemin de la photo. Placeholder = data URI SVG en attendant les
+   * vraies photos (voir todo.md §Assets). Une fois les photos reçues,
+   * remplacer par un chemin `/images/...` et retirer `unoptimized`
+   * sur le composant next/image correspondant.
+   */
+  src: string;
+  /** Texte alternatif — obligatoire pour l'accessibilité */
+  alt: string;
+  /** Date affichée façon polaroïd, ex: "06/10/19". Optionnelle. */
+  date?: string;
+  /** Légère rotation en degrés pour l'effet polaroïd */
+  rotation: number;
+}
+
+export interface OurStoryContent {
+  seo: {
+    title: string;
+    description: string;
+  };
+  /** Titre principal de la page */
+  heading: string;
+  /** Photo principale affichée en hero (polaroïd large) */
+  heroPhoto: OurStoryPhoto;
+  /** Paragraphes du récit, dans l'ordre d'affichage */
+  paragraphs: string[];
+  /** Photos de la galerie (sous les paragraphes) */
+  galleryPhotos: OurStoryPhoto[];
+  /**
+   * Lignes du message de clôture. Une chaîne vide représente un
+   * saut de ligne (`<br/>`) entre deux blocs de texte.
+   */
+  closingLines: string[];
+  cta: {
+    detailsLabel: string;
+    detailsHref: string;
+    musicLabel: string;
+    musicHref: string;
+  };
+}
