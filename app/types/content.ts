@@ -68,3 +68,45 @@ export interface SiteContent {
     canonicalUrl: string;
   };
 }
+
+// ============================================================
+//  Contenu de la page d'accueil — app/content/home.ts
+// ============================================================
+
+/**
+ * Une tuile de la grille de navigation (Our Story / Details / Music / Travel).
+ */
+export interface HomeGridItem {
+  /** Lien de destination, ex: "/our-story" ou "/details#travel" */
+  href: string;
+  /** Titre affiché sur la tuile */
+  label: string;
+  /** Sous-titre / accroche affichée au-dessus du label */
+  description: string;
+  /**
+   * Couleur de fond placeholder en attendant une vraie photo.
+   * À conserver même après ajout de `imageSrc` comme fallback de chargement.
+   */
+  bg: string;
+  /** Chemin de la photo réelle — à renseigner dès réception (voir todo.md §Assets) */
+  imageSrc?: string;
+}
+
+export interface HomeContent {
+  hero: {
+    /** Petit texte au-dessus du titre, ex: "S & N" */
+    eyebrow: string;
+    /** Titre principal du hero */
+    title: string;
+    /** Ligne de date affichée dans le hero */
+    dateLine: string;
+    /** Ligne de lieu affichée dans le hero */
+    locationLine: string;
+    /** Texte d'invitation sous le hero */
+    invitation: string;
+  };
+  /** Grille de navigation à 4 tuiles */
+  grid: HomeGridItem[];
+  /** Citation affichée dans la section intro, en bas de la home */
+  quote: string;
+}
