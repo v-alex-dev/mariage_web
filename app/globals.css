@@ -644,6 +644,7 @@ img {
 .polaroid__frame {
   overflow: hidden;
   line-height: 0;
+  position: relative; /* requis par next/image en mode `fill` */
 }
 
 .polaroid__img {
@@ -959,5 +960,202 @@ img {
 
   .polaroid--gallery {
     width: 280px;
+  }
+}
+
+/* ============================================================
+   THE DETAILS — Styles pour app/details/page.tsx
+   ============================================================ */
+
+/* ── Hero plein écran ── */
+.details__hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.details__hero-bg {
+  position: absolute;
+  inset: 0;
+}
+
+.details__hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+.details__hero-title {
+  position: relative;
+  z-index: 10;
+  font-family: var(--font-serif);
+  color: #fff;
+  font-weight: 300;
+  font-size: clamp(2.25rem, 8vw, 4.75rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0 1.5rem;
+}
+
+/* ── Carte d'invitation ── */
+.details__invitation-section {
+  background-color: var(--details-hero-bg);
+  padding: clamp(3rem, 6vw, 6rem) 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.details__invitation-card {
+  max-width: 520px;
+  width: 100%;
+  background-color: var(--details-card-bg);
+  color: var(--text-on-card);
+  padding: clamp(2rem, 5vw, 3rem);
+  border-radius: 4px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+.details__invitation-text {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.8;
+  font-weight: 300;
+  margin: 0;
+}
+
+/* ── Photo pleine largeur ── */
+.details__venue-photo-section {
+  width: 100%;
+}
+
+.details__venue-photo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+/* ── Grille infos pratiques ── */
+.details__info-section {
+  background-color: var(--our-story-bg);
+  padding: clamp(3rem, 6vw, 5rem) 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.details__info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  max-width: 900px;
+  width: 100%;
+}
+
+.details__info-item {
+  background-color: var(--card-bg);
+  padding: 1.5rem 1.75rem;
+  border-radius: 2px;
+  text-align: center;
+}
+
+.details__info-label {
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+  margin: 0 0 0.5rem;
+}
+
+.details__info-value {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── Travel & Stay ── */
+.details__travel-section {
+  background-color: var(--our-story-bg);
+  padding: clamp(3rem, 6vw, 6rem) 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.details__travel-inner {
+  max-width: 640px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.details__travel-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+.details__travel-text {
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  font-weight: 300;
+  margin: 0;
+}
+
+.details__travel-photo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+/* ── Bouton (spécifique à la carte d'invitation) ── */
+.details__btn {
+  display: inline-block;
+  padding: 13px 30px;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 500;
+  border-radius: 2px;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: 1.5px solid var(--button-border);
+  transition: all 0.25s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.details__btn:hover {
+  background-color: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.details__btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
+}
+
+/* ── Responsive tablet / desktop ── */
+@media (min-width: 800px) {
+  .details__info-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }
