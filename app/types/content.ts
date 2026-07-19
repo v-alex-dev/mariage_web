@@ -158,3 +158,49 @@ export interface OurStoryContent {
     musicHref: string;
   };
 }
+
+// ============================================================
+//  Contenu de la page The Details — app/content/details.ts
+// ============================================================
+
+/**
+ * Une "photo" de section avant réception des vraies images.
+ * `bg` sert de fallback couleur (voir HomeGridItem, même pattern).
+ */
+export interface DetailsPhoto {
+  bg: string;
+  imageSrc?: string;
+  alt: string;
+}
+
+export interface DetailsPracticalInfo {
+  label: string;
+  value: string;
+}
+
+export interface DetailsContent {
+  seo: {
+    title: string;
+    description: string;
+  };
+  hero: {
+    /** Titre du hero, ex: "THE DETAILS" (garder en anglais, cf. convention labels) */
+    title: string;
+    photo: DetailsPhoto;
+  };
+  invitation: {
+    text: string;
+    cta: {
+      label: string;
+      href: string;
+    };
+  };
+  venuePhoto: DetailsPhoto;
+  practicalInfo: DetailsPracticalInfo[];
+  travelStay: {
+    /** Titre de section, ex: "Travel & Stay" (garder en anglais, cf. HomeGridItem) */
+    title: string;
+    text: string;
+    photo: DetailsPhoto;
+  };
+}
