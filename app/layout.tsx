@@ -6,8 +6,6 @@ import Footer from './components/layout/Footer';
 import ColorCustomizerLoader from './components/layout/colorCustomerLoading';
 import { SITE } from '@/app/content/site';
 
-// import ColorCustomizer from './components/layout/ColorCustomizer';
-
 const cormorant = Cormorant_Garamond({
   variable: '--font-serif',
   subsets: ['latin'],
@@ -39,6 +37,7 @@ export const metadata: Metadata = {
   },
 };
 
+// APRÈS
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -50,10 +49,9 @@ export default function RootLayout({
     <html lang="fr" className={`${cormorant.variable} ${jost.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <Navbar />
-        <ColorCustomizerLoader />
+        {isDev && <ColorCustomizerLoader />}
         <main className="flex-1">{children}</main>
         <Footer />
-        {/* {isDev && <ColorCustomizer />} */}
       </body>
     </html>
   );
