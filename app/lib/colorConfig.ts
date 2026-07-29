@@ -41,7 +41,7 @@ export const COLOR_SECTIONS: ColorSection[] = [
         default: '#8b8468',
       },
       {
-        key: '--music-bg',
+        key: '--confirmation-bg',
         label: 'Musique',
         description: 'Fond de la page Music & Playlist',
         default: '#faf8f5',
