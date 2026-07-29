@@ -55,7 +55,7 @@ export const OUR_STORY: OurStoryContent = {
   cta: {
     detailsLabel: 'Voir les détails',
     detailsHref: '/details',
-    musicLabel: 'Suggérer une chanson',
-    musicHref: '/music',
+    rsvpLabel: 'Confirmer ma présence',
+    rsvpHref: '/confirmation',
   },
 };
