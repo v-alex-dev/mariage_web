@@ -36,8 +36,8 @@ export const DETAILS: DetailsContent = {
     // TODO: texte à valider avec le couple une fois le lieu confirmé
     text: 'Nous serons ravis de vous accueillir pour célébrer notre union. Vous trouverez ci-dessous toutes les informations pratiques pour ce grand jour.',
     cta: {
-      label: 'Suggérer une chanson',
-      href: '/music',
+      label: 'Confirmer ma présence',
+      href: '/confirmation',
     },
   },
 
