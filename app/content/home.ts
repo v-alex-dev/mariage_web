@@ -36,11 +36,11 @@ export const HOME: HomeContent = {
       // imageSrc: '/images/home-details.jpg',
     },
     {
-      href: '/music',
-      label: 'Music',
-      description: 'Ajoutez votre chanson à la playlist',
+      href: '/confirmation',
+      label: 'RSVP',
+      description: 'Confirmez votre présence et votre choix musical',
       bg: '#8b8468',
-      // imageSrc: '/images/home-music.jpg',
+      // imageSrc: '/images/home-confirmation.jpg',
     },
     {
       href: '/details#travel',
