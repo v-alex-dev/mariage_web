@@ -383,7 +383,7 @@ export default function ColorCustomizer() {
             Copier le CSS
           </button>
           <a
-            href="/preview-colors"
+            href="/global-color"
             target="_blank"
             rel="noopener noreferrer"
             className="customizer-btn customizer-btn--secondary"
