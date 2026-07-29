@@ -24,7 +24,7 @@ export type CssColorVar =
   | '--our-story-bg'
   | '--details-hero-bg'
   | '--details-card-bg'
-  | '--music-bg'
+  | '--confirmation-bg'
   | '--card-bg'
   | '--navbar-bg'
   | '--footer-bg'
