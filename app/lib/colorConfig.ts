@@ -42,8 +42,8 @@ export const COLOR_SECTIONS: ColorSection[] = [
       },
       {
         key: '--confirmation-bg',
-        label: 'Musique',
-        description: 'Fond de la page Music & Playlist',
+        label: 'Confirmation',
+        description: 'Fond de la page RSVP & confirmation',
         default: '#faf8f5',
       },
       {
