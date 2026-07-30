@@ -16,5 +16,14 @@ model Song {
   id         Int        @id @default(autoincrement())
   title      String
   artist     String
-  selections RvspSong[]
+  selections RsvpSong[]
+}
+
+model Rsvp {
+  id        Int        @id @default(autoincrement())
+  fullname  String
+  email     String
+  attenting Boolean
+  Songs     RsvpSong[]
+  createAt  DateTime   @default(now())
 }
