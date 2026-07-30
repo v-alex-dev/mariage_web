@@ -45,3 +45,4 @@ todo.md
 /app/generated/prisma
 
 /prisma/*.db
+/app/generated
