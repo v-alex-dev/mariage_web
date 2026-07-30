@@ -27,3 +27,13 @@ model Rsvp {
   Songs     RsvpSong[]
   createAt  DateTime   @default(now())
 }
+
+model RsvpSong {
+  id     Int  @id @default(autoincrement())
+  rsvpId Int
+  songId Int
+  rsvp   Rsvp @relation(fields: [rsvpId], references: [id], onDelete: Cascade)
+  song   Song @relation(fields: [songId], references: [id])
+
+  @@unique([rsvpId, songId])
+}
