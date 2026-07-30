@@ -11,3 +11,10 @@ generator client {
 datasource db {
   provider = "sqlite"
 }
+
+model Song {
+  id         Int        @id @default(autoincrement())
+  title      String
+  artist     String
+  selections RvspSong[]
+}
