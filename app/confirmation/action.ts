@@ -10,15 +10,19 @@ const rsvpSchema = z
     attending: z.boolean(),
     songIds: z.array(z.number().int().positive()),
   })
-  .refine(
-    (data) => (data.attending ? data.songIds.length === MAX_SONGS : data.songIds.length === 0),
-    (data) => ({
-      message: data.attending
-        ? `Merci de choisir ${MAX_SONGS} chanson${MAX_SONGS > 1 ? 's' : ''}.`
-        : 'Aucune chanson ne doit être sélectionnée si vous ne venez pas.',
-      path: ['songIds'],
-    })
-  );
+  .superRefine((data, ctx) => {
+    const isValid = data.attending ? data.songIds.length === MAX_SONGS : data.songIds.length === 0;
+
+    if (!isValid) {
+      ctx.addIssue({
+        code: 'custom',
+        message: data.attending
+          ? `Merci de choisir ${MAX_SONGS} chanson${MAX_SONGS > 1 ? 's' : ''}.`
+          : 'Aucune chanson ne doit être sélectionnée si vous ne venez pas.',
+        path: ['songIds'],
+      });
+    }
+  });
 export type RsvpInput = z.infer<typeof rsvpSchema>;
 
 export type RsvpActionState =
