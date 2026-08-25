@@ -14,3 +14,5 @@ interface ConfirmationFormProps {
   songs: Song[];
   content: ConfirmationContent;
 }
+
+export default function ConfirmationForm({ songs, content }: ConfirmationFormProps) {}
