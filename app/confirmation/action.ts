@@ -19,3 +19,9 @@ const rsvpSchema = z
       path: ['songIds'],
     })
   );
+export type RsvpInput = z.infer<typeof rsvpSchema>;
+
+export type RsvpActionState =
+  | { status: 'idle' }
+  | { status: 'error'; errors: Record<string, string[]>; message?: string }
+  | { status: 'success'; attending: boolean };
