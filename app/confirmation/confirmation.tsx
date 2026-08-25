@@ -1,7 +1,7 @@
 'use client';
 
 import { useActionState, useState, useTransition } from 'react';
-import { submitRsvp, type RsvpActionState, type RsvpInput } from './actions';
+import { submitRsvp, type RsvpActionState, type RsvpInput } from './action';
 import type { ConfirmationContent } from '@/app/types/content';
 
 interface Song {
@@ -14,6 +14,8 @@ interface ConfirmationFormProps {
   songs: Song[];
   content: ConfirmationContent;
 }
+
+const initialState: RsvpActionState = { status: 'idle' };
 
 export default function ConfirmationForm({ songs, content }: ConfirmationFormProps) {
   const [state, dispatch] = useActionState(submitRsvp, initialState);
