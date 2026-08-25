@@ -49,4 +49,18 @@ export default function ConfirmationForm({ songs, content }: ConfirmationFormPro
     if (songId === null) return;
     submit({ fullName, email, attending: true, songIds: [songId] });
   };
+
+  // ── Succès ──
+  if (state.status === 'success') {
+    return (
+      <div className="max-w-xl w-full text-center">
+        <p
+          className="font-serif italic text-lg leading-relaxed"
+          style={{ color: 'var(--text-primary)' }}
+        >
+          {state.attending ? content.success.attending : content.success.notAttending}
+        </p>
+      </div>
+    );
+  }
 }
