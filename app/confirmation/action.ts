@@ -3,3 +3,19 @@
 import { z } from 'zod';
 import { prisma } from '@/app/lib/db';
 import { MAX_SONGS } from '@/app/lib/rsvpConfig';
+const rsvpSchema = z
+  .object({
+    fullName: z.string().trim().min(2, 'Le nom doit contenir au moins 2 caractères.'),
+    email: z.string().trim().email('Adresse email invalide.'),
+    attending: z.boolean(),
+    songIds: z.array(z.number().int().positive()),
+  })
+  .refine(
+    (data) => (data.attending ? data.songIds.length === MAX_SONGS : data.songIds.length === 0),
+    (data) => ({
+      message: data.attending
+        ? `Merci de choisir ${MAX_SONGS} chanson${MAX_SONGS > 1 ? 's' : ''}.`
+        : 'Aucune chanson ne doit être sélectionnée si vous ne venez pas.',
+      path: ['songIds'],
+    })
+  );
