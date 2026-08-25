@@ -204,3 +204,39 @@ export interface DetailsContent {
     photo: DetailsPhoto;
   };
 }
+
+// ============================================================
+//  Contenu de la page Confirmation — app/content/confirmation.ts
+// ============================================================
+
+export interface ConfirmationContent {
+  seo: {
+    title: string;
+    description: string;
+  };
+  step1: {
+    title: string;
+    fullNameLabel: string;
+    emailLabel: string;
+    attendingLabel: string;
+    attendingYes: string;
+    attendingNo: string;
+    submitLabel: string;
+  };
+  step2: {
+    title: string;
+    /** Introduit la liste de chansons (ex: "Choisissez la chanson...") */
+    songsLabel: string;
+    /** Précise la contrainte, ex: "Vous pouvez choisir une seule chanson" */
+    maxSongsHint: string;
+    backLabel: string;
+    submitLabel: string;
+  };
+  success: {
+    attending: string;
+    notAttending: string;
+  };
+  error: {
+    generic: string;
+  };
+}
