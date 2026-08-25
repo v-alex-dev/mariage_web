@@ -25,3 +25,42 @@ export type RsvpActionState =
   | { status: 'idle' }
   | { status: 'error'; errors: Record<string, string[]>; message?: string }
   | { status: 'success'; attending: boolean };
+export async function submitRsvp(
+  _prevState: RsvpActionState,
+  input: RsvpInput
+): Promise<RsvpActionState> {
+  const parsed = rsvpSchema.safeParse(input);
+
+  if (!parsed.success) {
+    return {
+      status: 'error',
+      errors: parsed.error.flatten().fieldErrors as Record<string, string[]>,
+    };
+  }
+
+  const { fullName, email, attending, songIds } = parsed.data;
+
+  try {
+    // Nested write — une seule transaction, jamais d'écriture partielle
+    // (voir todo.md §6, règle d'intégrité Rsvp <-> RsvpSong)
+    await prisma.rsvp.create({
+      data: {
+        fullName,
+        email,
+        attending,
+        songs: {
+          create: songIds.map((songId) => ({ songId })),
+        },
+      },
+    });
+
+    return { status: 'success', attending };
+  } catch (error) {
+    console.error('[submitRsvp] Erreur Prisma:', error);
+    return {
+      status: 'error',
+      errors: {},
+      message: "Une erreur est survenue lors de l'enregistrement. Merci de réessayer.",
+    };
+  }
+}
