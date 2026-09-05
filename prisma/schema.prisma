@@ -21,10 +21,10 @@ model Song {
 
 model Rsvp {
   id        Int        @id @default(autoincrement())
-  fullname  String
+  fullName  String
   email     String
-  attenting Boolean
-  Songs     RsvpSong[]
+  attending Boolean
+  songs     RsvpSong[]
   createAt  DateTime   @default(now())
 }
 
