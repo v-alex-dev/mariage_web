@@ -5,6 +5,7 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ColorCustomizerLoader from './components/layout/colorCustomerLoading';
 import { SITE } from '@/app/content/site';
+import EventJsonLd from './components/seo/EventJsonLd';
 
 const cormorant = Cormorant_Garamond({
   variable: '--font-serif',
@@ -48,6 +49,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${cormorant.variable} ${jost.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
+        <EventJsonLd />
         <Navbar />
         {isDev && <ColorCustomizerLoader />}
         <main className="flex-1">{children}</main>
