@@ -14,3 +14,16 @@ function loadColors(): ColorMap {
     return DEFAULT_COLORS as ColorMap;
   }
 }
+export default function GlobalColorPage() {
+  // Exclu de la prod : accessible uniquement depuis le FAB (isDev) en dev.
+  // Un accès direct par URL en prod ne doit rien afficher d'utile.
+  if (process.env.NODE_ENV === 'production') {
+    return (
+      <main className="flex min-h-screen items-center justify-center p-8 text-center">
+        <p className="font-sans text-sm text-[var(--text-secondary)]">
+          Cette page n&apos;est disponible qu&apos;en environnement de développement.
+        </p>
+      </main>
+    );
+  }
+}
