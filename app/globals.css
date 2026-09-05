@@ -1159,3 +1159,138 @@ img {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* ============================================================
+   GLOBAL COLOR — Page d'impression /global-color
+   ============================================================ */
+
+.global-color-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: clamp(3rem, 6vw, 5rem) 1.5rem 6rem;
+  background-color: #fff;
+  color: #1a1a1a;
+  font-family: var(--font-sans);
+}
+
+.global-color-page__header {
+  text-align: center;
+  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.global-color-page__monogram {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  letter-spacing: 0.1em;
+}
+
+.global-color-page__title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 1.5rem;
+}
+
+.global-color-page__date {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b6560;
+}
+
+.global-color-page__section {
+  margin-bottom: 2.5rem;
+}
+
+.global-color-page__section-title {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.global-color-page__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.global-color-page__table th {
+  text-align: left;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b6560;
+  padding: 0.5rem 0.5rem;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.global-color-page__table td {
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+.global-color-page__var-label {
+  display: block;
+  font-weight: 500;
+}
+
+.global-color-page__var-desc {
+  display: block;
+  font-size: 0.72rem;
+  color: #6b6560;
+}
+
+.global-color-page__swatch {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.global-color-page__table code {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.05em;
+}
+
+.global-color-page__print-btn {
+  display: block;
+  margin: 3rem auto 0;
+  padding: 12px 28px;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background-color: #1a1a1a;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.global-color-page__print-btn:hover {
+  background-color: #333;
+}
+
+/* ── Impression ── */
+@media print {
+  .global-color-page__print-btn {
+    display: none;
+  }
+
+  .global-color-page {
+    padding: 0;
+    max-width: 100%;
+  }
+
+  .global-color-page__table {
+    page-break-inside: avoid;
+  }
+}
