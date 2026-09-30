@@ -1294,3 +1294,54 @@ img {
     page-break-inside: avoid;
   }
 }
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--our-story-bg);
+  padding: 1.5rem;
+}
+
+.login-page__form {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background-color: var(--card-bg);
+  padding: 2.5rem 2rem;
+  border-radius: 4px;
+}
+
+.login-page__title {
+  text-align: center;
+}
+
+.login-page__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+}
+
+.login-page__field input {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  padding: 10px 12px;
+}
+
+.login-page__error {
+  color: #b3261e;
+  font-size: 0.8rem;
+}
+
+.dashboard-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
