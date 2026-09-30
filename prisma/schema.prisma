@@ -13,27 +13,38 @@ datasource db {
 }
 
 model Song {
-  id         Int        @id @default(autoincrement())
+  id         Int         @id @default(autoincrement())
   title      String
   artist     String
-  selections RsvpSong[]
+  guestSongs GuestSong[]
+  guests     Guest[]
 }
 
-model Rsvp {
-  id        Int        @id @default(autoincrement())
+model Group {
+  id     Int     @id @default(autoincrement())
+  token  String  @unique @default(uuid())
+  label  String?
+  guests Guest[]
+}
+
+model Guest {
+  id        Int         @id @default(autoincrement())
+  groupId   Int
+  group     Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
   fullName  String
-  email     String
-  attending Boolean
-  songs     RsvpSong[]
-  createAt  DateTime   @default(now())
+  email     String?
+  attending Boolean?
+  songs     GuestSong[]
+  song      Song?       @relation(fields: [songId], references: [id])
+  songId    Int?
 }
 
-model RsvpSong {
-  id     Int  @id @default(autoincrement())
-  rsvpId Int
-  songId Int
-  rsvp   Rsvp @relation(fields: [rsvpId], references: [id], onDelete: Cascade)
-  song   Song @relation(fields: [songId], references: [id])
+model GuestSong {
+  id      Int   @id @default(autoincrement())
+  guestId Int
+  songId  Int
+  guest   Guest @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  song    Song  @relation(fields: [songId], references: [id])
 
-  @@unique([rsvpId, songId])
+  @@unique([guestId, songId])
 }
