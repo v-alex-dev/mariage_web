@@ -28,15 +28,15 @@ model Group {
 }
 
 model Guest {
-  id        Int         @id @default(autoincrement())
-  groupId   Int
-  group     Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  fullName  String
-  email     String?
-  attending Boolean?
-  songs     GuestSong[]
-  song      Song?       @relation(fields: [songId], references: [id])
-  songId    Int?
+  id         Int         @id @default(autoincrement())
+  groupId    Int
+  group      Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  fullName   String
+  email      String?
+  attending  Boolean?
+  guestSongs GuestSong[]
+  song       Song?       @relation(fields: [songId], references: [id])
+  songId     Int?
 }
 
 model GuestSong {
