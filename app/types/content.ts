@@ -154,8 +154,6 @@ export interface OurStoryContent {
   cta: {
     detailsLabel: string;
     detailsHref: string;
-    rsvpLabel: string;
-    rsvpHref: string;
   };
 }
 

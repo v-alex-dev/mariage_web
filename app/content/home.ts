@@ -36,13 +36,6 @@ export const HOME: HomeContent = {
       // imageSrc: '/images/home-details.jpg',
     },
     {
-      href: '/confirmation',
-      label: 'RSVP',
-      description: 'Confirmez votre présence et votre choix musical',
-      bg: '#8b8468',
-      // imageSrc: '/images/home-confirmation.jpg',
-    },
-    {
       href: '/details#travel',
       label: 'Travel & Stay',
       description: 'Comment s\u2019y rendre & où dormir',

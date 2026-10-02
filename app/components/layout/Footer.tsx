@@ -7,7 +7,6 @@ const NAV_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Our Story', href: '/our-story' },
   { label: 'The Details', href: '/details' },
-  { label: 'RSVP', href: '/confirmation' },
 ];
 
 export default function Footer() {
