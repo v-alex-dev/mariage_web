@@ -1345,3 +1345,37 @@ img {
   gap: 1rem;
   flex-wrap: wrap;
 }
+.dashboard-page__header-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.dashboard-form {
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.dashboard-form__guests {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  border: none;
+  padding: 0;
+}
+
+.dashboard-form__guest-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.dashboard-form__guest-row input {
+  flex: 1;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  padding: 10px 12px;
+}
