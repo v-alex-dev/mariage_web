@@ -17,7 +17,6 @@ model Song {
   title      String
   artist     String
   guestSongs GuestSong[]
-  guests     Guest[]
 }
 
 model Group {
@@ -35,8 +34,6 @@ model Guest {
   email     String?
   attending Boolean?
   songs     GuestSong[]
-  song      Song?       @relation(fields: [songId], references: [id])
-  songId    Int?
 }
 
 model GuestSong {
