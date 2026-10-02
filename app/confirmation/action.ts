@@ -2,69 +2,69 @@
 
 import { z } from 'zod';
 import { prisma } from '@/app/lib/db';
-import { MAX_SONGS } from '@/app/lib/rsvpConfig';
-const rsvpSchema = z
+
+const guestResponseSchema = z
   .object({
-    fullName: z.string().trim().min(2, 'Le nom doit contenir au moins 2 caractères.'),
-    email: z.string().trim().email('Adresse email invalide.'),
+    guestId: z.number().int().positive(),
     attending: z.boolean(),
-    songIds: z.array(z.number().int().positive()),
+    songId: z.number().int().positive().nullable(),
   })
-  .superRefine((data, ctx) => {
-    const isValid = data.attending ? data.songIds.length === MAX_SONGS : data.songIds.length === 0;
-
-    if (!isValid) {
-      ctx.addIssue({
-        code: 'custom',
-        message: data.attending
-          ? `Merci de choisir ${MAX_SONGS} chanson${MAX_SONGS > 1 ? 's' : ''}.`
-          : 'Aucune chanson ne doit être sélectionnée si vous ne venez pas.',
-        path: ['songIds'],
-      });
-    }
+  .refine((d) => (d.attending ? d.songId !== null : d.songId === null), {
+    message: 'Choisissez une chanson si vous venez.',
+    path: ['songId'],
   });
-export type RsvpInput = z.infer<typeof rsvpSchema>;
 
-export type RsvpActionState =
+const confirmGroupSchema = z.object({
+  token: z.string().uuid(),
+  guests: z.array(guestResponseSchema).min(1),
+});
+
+export type ConfirmGroupInput = z.infer<typeof confirmGroupSchema>;
+export type ConfirmGroupState =
   | { status: 'idle' }
-  | { status: 'error'; errors: Record<string, string[]>; message?: string }
-  | { status: 'success'; attending: boolean };
-export async function submitRsvp(
-  _prevState: RsvpActionState,
-  input: RsvpInput
-): Promise<RsvpActionState> {
-  const parsed = rsvpSchema.safeParse(input);
+  | { status: 'error'; message: string }
+  | { status: 'success' };
 
-  if (!parsed.success) {
-    return {
-      status: 'error',
-      errors: parsed.error.flatten().fieldErrors as Record<string, string[]>,
-    };
-  }
+export async function confirmGroup(
+  _prev: ConfirmGroupState,
+  input: ConfirmGroupInput
+): Promise<ConfirmGroupState> {
+  const parsed = confirmGroupSchema.safeParse(input);
+  if (!parsed.success) return { status: 'error', message: 'Données invalides.' };
 
-  const { fullName, email, attending, songIds } = parsed.data;
+  const { token, guests } = parsed.data;
+
+  const group = await prisma.group.findUnique({
+    where: { token },
+    include: { guests: true },
+  });
+  if (!group) return { status: 'error', message: 'Invitation introuvable.' };
+
+  // Sécurité : le payload doit correspondre EXACTEMENT aux guestId du groupe résolu par le token
+  const validIds = new Set(group.guests.map((g) => g.id));
+  const payloadIds = new Set(guests.map((g) => g.guestId));
+  const isExactMatch =
+    payloadIds.size === validIds.size && [...payloadIds].every((id) => validIds.has(id));
+  if (!isExactMatch) return { status: 'error', message: 'Requête invalide.' };
 
   try {
-    // Nested write — une seule transaction, jamais d'écriture partielle
-    // (voir todo.md §6, règle d'intégrité Rsvp <-> RsvpSong)
-    await prisma.rsvp.create({
-      data: {
-        fullName,
-        email,
-        attending,
-        songs: {
-          create: songIds.map((songId) => ({ songId })),
-        },
-      },
-    });
-
-    return { status: 'success', attending };
+    await prisma.$transaction(
+      guests.map((g) =>
+        prisma.guest.update({
+          where: { id: g.guestId },
+          data: {
+            attending: g.attending,
+            songs: {
+              deleteMany: {},
+              create: g.songId ? [{ songId: g.songId }] : [],
+            },
+          },
+        })
+      )
+    );
+    return { status: 'success' };
   } catch (error) {
-    console.error('[submitRsvp] Erreur Prisma:', error);
-    return {
-      status: 'error',
-      errors: {},
-      message: "Une erreur est survenue lors de l'enregistrement. Merci de réessayer.",
-    };
+    console.error('[confirmGroup] Erreur Prisma:', error);
+    return { status: 'error', message: 'Une erreur est survenue. Merci de réessayer.' };
   }
 }

@@ -1,70 +1,48 @@
 'use server';
 
-import { z } from 'zod';
-import { prisma } from '@/app/lib/db';
+import { timingSafeEqual } from 'crypto';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { encryptSession } from '@/app/lib/session';
 
-const guestResponseSchema = z
-  .object({
-    guestId: z.number().int().positive(),
-    attending: z.boolean(),
-    songId: z.number().int().positive().nullable(),
-  })
-  .refine((d) => (d.attending ? d.songId !== null : d.songId === null), {
-    message: 'Choisissez une chanson si vous venez.',
-    path: ['songId'],
-  });
+export type LoginState = { status: 'idle' } | { status: 'error'; message: string };
 
-const confirmGroupSchema = z.object({
-  token: z.string().uuid(),
-  guests: z.array(guestResponseSchema).min(1),
-});
+function safeCompare(a: string, b: string) {
+  const bufA = Buffer.from(a);
+  const bufB = Buffer.from(b);
+  if (bufA.length !== bufB.length) return false;
+  return timingSafeEqual(bufA, bufB);
+}
 
-export type ConfirmGroupInput = z.infer<typeof confirmGroupSchema>;
-export type ConfirmGroupState =
-  | { status: 'idle' }
-  | { status: 'error'; message: string }
-  | { status: 'success' };
+export async function login(_prevState: LoginState, formData: FormData): Promise<LoginState> {
+  const username = String(formData.get('username') ?? '');
+  const password = String(formData.get('password') ?? '');
 
-export async function confirmGroup(
-  _prev: ConfirmGroupState,
-  input: ConfirmGroupInput
-): Promise<ConfirmGroupState> {
-  const parsed = confirmGroupSchema.safeParse(input);
-  if (!parsed.success) return { status: 'error', message: 'Données invalides.' };
+  const isValid =
+    username.length > 0 &&
+    password.length > 0 &&
+    safeCompare(username, process.env.DASHBOARD_USER ?? '') &&
+    safeCompare(password, process.env.DASHBOARD_PASSWORD ?? '');
 
-  const { token, guests } = parsed.data;
-
-  const group = await prisma.group.findUnique({
-    where: { token },
-    include: { guests: true },
-  });
-  if (!group) return { status: 'error', message: 'Invitation introuvable.' };
-
-  // Sécurité : le payload doit correspondre EXACTEMENT aux guestId du groupe résolu par le token
-  const validIds = new Set(group.guests.map((g) => g.id));
-  const payloadIds = new Set(guests.map((g) => g.guestId));
-  const isExactMatch =
-    payloadIds.size === validIds.size && [...payloadIds].every((id) => validIds.has(id));
-  if (!isExactMatch) return { status: 'error', message: 'Requête invalide.' };
-
-  try {
-    await prisma.$transaction(
-      guests.map((g) =>
-        prisma.guest.update({
-          where: { id: g.guestId },
-          data: {
-            attending: g.attending,
-            songs: {
-              deleteMany: {},
-              create: g.songId ? [{ songId: g.songId }] : [],
-            },
-          },
-        })
-      )
-    );
-    return { status: 'success' };
-  } catch (error) {
-    console.error('[confirmGroup] Erreur Prisma:', error);
-    return { status: 'error', message: 'Une erreur est survenue. Merci de réessayer.' };
+  if (!isValid) {
+    return { status: 'error', message: 'Identifiants incorrects.' };
   }
+
+  const session = await encryptSession({ user: username });
+  const cookieStore = await cookies();
+  cookieStore.set('session', session, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 7,
+  });
+
+  redirect('/dashboard');
+}
+
+export async function logout() {
+  const cookieStore = await cookies();
+  cookieStore.delete('session');
+  redirect('/dashboard/login');
 }
