@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 export default function DetailsPage() {
-  const { hero, invitation, venuePhoto, practicalInfo, travelStay } = DETAILS;
+  const { hero, venuePhoto, practicalInfo, travelStay } = DETAILS;
 
   return (
     <main style={{ backgroundColor: 'var(--details-hero-bg)', width: '100%' }}>
@@ -21,16 +21,6 @@ export default function DetailsPage() {
         />
         <div className="details__hero-overlay" aria-hidden="true" />
         <h1 className="details__hero-title">{hero.title}</h1>
-      </section>
-
-      {/* ── CARTE D'INVITATION ── */}
-      <section className="details__invitation-section" aria-label="Invitation">
-        <div className="details__invitation-card">
-          <p className="details__invitation-text">{invitation.text}</p>
-          <a href={invitation.cta.href} className="details__btn">
-            {invitation.cta.label}
-          </a>
-        </div>
       </section>
 
       {/* ── PHOTO DU LIEU (pleine largeur) ── */}

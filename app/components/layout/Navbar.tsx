@@ -9,7 +9,6 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/our-story', label: 'Our Story' },
   { href: '/details', label: 'Details' },
-  { href: '/confirmation', label: 'RSVP' },
 ];
 
 export default function Navbar() {

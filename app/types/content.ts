@@ -188,13 +188,6 @@ export interface DetailsContent {
     title: string;
     photo: DetailsPhoto;
   };
-  invitation: {
-    text: string;
-    cta: {
-      label: string;
-      href: string;
-    };
-  };
   venuePhoto: DetailsPhoto;
   practicalInfo: DetailsPracticalInfo[];
   travelStay: {

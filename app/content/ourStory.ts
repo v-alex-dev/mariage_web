@@ -55,7 +55,5 @@ export const OUR_STORY: OurStoryContent = {
   cta: {
     detailsLabel: 'Voir les détails',
     detailsHref: '/details',
-    rsvpLabel: 'Confirmer ma présence',
-    rsvpHref: '/confirmation',
   },
 };

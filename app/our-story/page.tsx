@@ -134,9 +134,6 @@ export default function OurStoryPage() {
             <Link href={cta.detailsHref} className="our-story__btn our-story__btn--primary">
               {cta.detailsLabel}
             </Link>
-            <Link href={cta.rsvpHref} className="our-story__btn our-story__btn--ghost">
-              {cta.rsvpLabel}
-            </Link>
           </div>
 
           {/* Monogramme footer */}
