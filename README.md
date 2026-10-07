@@ -1,30 +1,34 @@
 # 💍 Sophie & Nathan — Wedding Website
 
-Site web de mariage statique et élégant, conçu pour informer les invités, collecter leurs confirmations de présence et leur choix musical. Construit avec **Next.js (App Router)**, **TypeScript strict**, **Tailwind CSS v4**, **Prisma 7 + SQLite** et une architecture entièrement personnalisable via variables CSS globales.
+Site web de mariage statique et élégant, conçu pour informer les invités et collecter leur confirmation de présence ainsi que leur choix musical. Construit avec **Next.js (App Router)**, **TypeScript strict**, **Tailwind CSS v4**, **Prisma 7 + SQLite** et une architecture entièrement personnalisable via variables CSS globales.
 
-Ce projet sert un double objectif : c'est le site d'information réel du mariage de Sophie & Nathan, **et** une pièce de portfolio démontrant une approche professionnelle du développement frontend (architecture propre, TypeScript strict, SEO soigné, formulaires robustes, Docker-readiness).
+Ce projet sert un double objectif : c'est le site d'information réel du mariage de Sophie & Nathan, **et** une pièce de portfolio démontrant une approche professionnelle du développement frontend (architecture propre, TypeScript strict, SEO soigné, sécurité des Server Actions, Docker-readiness).
 
 ---
 
 ## 🎯 Objectif du projet
 
-Le site informe les invités du mariage et gère la confirmation de présence. Les invités ont reçu un faire-part physique ; le site complète cette invitation en offrant :
+Les invités reçoivent un **faire-part physique avec QR code**. Ce code renvoie vers un lien de confirmation **unique par foyer/groupe** — il n'y a pas d'inscription libre. Le couple pré-remplit la liste de ses invités depuis un espace privé, puis récupère un lien par groupe à transmettre à l'imprimeur du faire-part.
 
+Le site offre :
 - Les informations pratiques du mariage (lieu, horaires, programme, hébergement)
 - L'histoire du couple
-- Un formulaire de confirmation de présence (RSVP), avec choix d'une chanson parmi une liste fermée fournie par le couple, stocké en base de données
+- Une page de confirmation **par lien unique** (présence + choix musical par invité)
+- Un espace privé (`/dashboard`) où le couple gère ses groupes d'invités et consulte les réponses
 
 ---
 
 ## 📄 Pages du site
 
-| Route | Nom | Description |
-|---|---|---|
-| `/` | **Home** | Hero avec noms, date, lieu + grille de navigation visuelle |
-| `/our-story` | **Our Story** | Histoire du couple, photos style polaroïd, texte narratif |
-| `/details` | **The Details** | Informations pratiques : lieu, horaires, programme, hébergement |
-| `/confirmation` | **RSVP** | Formulaire de confirmation de présence en 2 étapes (présence puis choix musical), écrit en base via Prisma |
-| `/global-color` | **Global Color** *(dev only)* | Outil d'impression des couleurs choisies par le couple — exclu de la production et du sitemap |
+| Route | Nom | Accès | Description |
+|---|---|---|---|
+| `/` | **Home** | Public | Hero avec noms, date, lieu + grille de navigation visuelle |
+| `/our-story` | **Our Story** | Public | Histoire du couple, photos style polaroïd, texte narratif |
+| `/details` | **The Details** | Public | Informations pratiques : lieu, horaires, programme, hébergement |
+| `/confirmation/[token]` | **Confirmation (invité)** | Lien unique par groupe (non indexé) | Un invité confirme sa présence et son choix musical pour tout son foyer |
+| `/dashboard` | **Espace couple** | Protégé par mot de passe | Consultation des réponses, statistiques, liens par groupe |
+| `/dashboard/groups/new` | **Nouveau groupe** | Protégé | Création d'un groupe d'invités |
+| `/global-color` | **Global Color** *(dev only)* | Dev uniquement | Outil d'impression des couleurs choisies par le couple |
 
 ---
 
@@ -32,16 +36,17 @@ Le site informe les invités du mariage et gère la confirmation de présence. L
 
 | Outil | Usage |
 |---|---|
-| **Next.js (App Router)** | Framework principal — Server Components, Server Actions, Metadata API |
+| **Next.js (App Router)** | Server Components, Server Actions, Metadata API, Proxy (anciennement "Middleware") |
 | **TypeScript** | Typage strict sur l'ensemble du projet |
 | **Tailwind CSS v4** | Utilitaires ponctuels, en complément des CSS Modules/BEM du système de thème |
 | **CSS Variables globales** | Système de thème entièrement personnalisable (voir § Outil de personnalisation) |
-| **Prisma 7 + SQLite** | Base de données du formulaire RSVP, via driver adapter (`@prisma/adapter-better-sqlite3`) |
-| **Zod** | Validation des données du formulaire RSVP côté serveur |
+| **Prisma 7 + SQLite** | Base de données, via driver adapter (`@prisma/adapter-better-sqlite3`) |
+| **Zod** | Validation de toutes les données entrantes des Server Actions |
+| **jose** | Signature/vérification des sessions JWT du dashboard (compatible Edge Runtime) |
 | **Next/Image** | Optimisation automatique des images |
 | **Next/Font** | Chargement optimisé des polices (Google Fonts : Cormorant Garamond, Jost) |
 | **Metadata API (Next.js)** | SEO, Open Graph, Twitter Cards |
-| **Sitemap & Robots (Next.js)** | Indexation SEO automatisée, `/global-color` exclue |
+| **Sitemap & Robots (Next.js)** | Indexation SEO automatisée — `/global-color`, `/dashboard` et `/confirmation` exclus |
 | **JSON-LD (schema.org `Event`)** | Rich snippet Google pour l'événement du mariage |
 
 ---
@@ -68,29 +73,47 @@ Voir `app/lib/colorConfig.ts` pour la liste exhaustive, organisée en sections :
 
 ---
 
-## 💌 Formulaire de confirmation (`/confirmation`)
+## 💌 Confirmation de présence par lien unique (`/confirmation/[token]`)
 
-### Fonctionnement
+### Principe
 
-Le formulaire est un **wizard client en 2 étapes**, piloté par un état local (`useState`) et une **unique Server Action** (`submitRsvp`) :
+**L'invité ne s'inscrit jamais lui-même.** Le couple crée un `Group` (un foyer, ex. "Famille Dupont") depuis le dashboard et y ajoute les `Guest` (noms) à l'avance. Chaque groupe a un `token` (UUID v4) qui compose l'URL `/confirmation/<token>` — ce lien est destiné à être transformé en QR code pour le faire-part physique (génération du QR hors de l'application, chez l'imprimeur).
 
-1. **Étape "présence"** — nom, email, présence oui/non
-   - Si absent → soumission immédiate, aucune étape musicale
-2. **Étape "chanson"** *(uniquement si présent)* — choix d'une chanson dans la liste fermée fournie par le couple
-
-Les deux étapes n'entraînent qu'**un seul appel réseau final**, avec une **écriture Prisma imbriquée** (`Rsvp.create` + `songs.create` en une seule transaction) — jamais d'écriture partielle.
+En ouvrant son lien, l'invité voit directement les noms de son foyer et répond pour chacun : présent/absent + choix d'une chanson parmi la liste fermée fournie par le couple.
 
 ### Modèle de données
 
-- `Song` — liste fermée de chansons, alimentée par `prisma/seed.ts` (⚠️ contient actuellement une liste **placeholder** — à remplacer par la vraie liste fournie par le couple)
-- `Rsvp` — une réponse d'invité (nom, email, présence)
-- `RsvpSong` — table de jointure explicite (relation many-to-many, nécessaire en SQLite avec Prisma), permet d'étendre facilement vers un choix multiple plus tard sans migration de structure
+```
+Group  — un foyer, identifié par un token UUID unique (le QR code)
+Guest  — un invité du groupe, pré-rempli par le couple (jamais créé par l'invité)
+Song   — liste fermée de chansons, alimentée par prisma/seed.ts
+GuestSong — relation many-to-many Guest ↔ Song (chaque invité choisit sa propre chanson)
+```
 
-Le nombre de chansons sélectionnables est centralisé dans `app/lib/rsvpConfig.ts` (`MAX_SONGS`), partagé entre la validation Zod (serveur) et le composant client — jamais dupliqué en dur.
+### Sécurité — règle non négociable
+
+La Server Action `confirmGroup` (`app/confirmation/action.ts`) ne fait **jamais** de `create` sur un `Guest` — uniquement des `update` sur des invités déjà existants. Elle résout le `Group` **côté serveur** à partir du `token`, puis **rejette toute requête dont un `guestId` soumis n'appartient pas à ce groupe**. Sans cette vérification, modifier le payload envoyé au client (DevTools) permettrait de répondre à la place d'un autre foyer.
 
 ### Validation
 
-`app/confirmation/action.ts` valide les données avec Zod (`superRefine`) avant toute écriture : un invité absent ne peut avoir aucune chanson sélectionnée, un invité présent doit en sélectionner exactement `MAX_SONGS`.
+Toutes les Server Actions (`confirmGroup`, `createGroup`, `login`) valident leurs entrées avec **Zod** avant tout appel Prisma.
+
+---
+
+## 🔐 Espace couple (`/dashboard`)
+
+### Authentification
+
+Pas de table `User`, pas de base de mots de passe à sécuriser : les identifiants vivent uniquement en variables d'environnement (`DASHBOARD_USER` / `DASHBOARD_PASSWORD`), comparées en **temps constant** (`crypto.timingSafeEqual`) pour éviter les attaques par timing. Une session **JWT signée** (`jose`) est stockée dans un cookie `httpOnly`, `secure` en production, valable 7 jours. Le fichier **`proxy.ts`** (anciennement `middleware.ts`, renommé suite à Next.js 16) protège toutes les routes `/dashboard/*` sauf `/dashboard/login`.
+
+### Fonctionnalités
+
+- **`/dashboard`** — statistiques (présents/absents/sans réponse), chansons les plus demandées, table groupes/invités, bouton "Copier le lien" par groupe
+- **`/dashboard/groups/new`** — création d'un groupe avec sa liste d'invités (écriture imbriquée en une seule transaction Prisma)
+
+### QR code
+
+**Pas de génération programmatique dans l'app**, volontairement : le dashboard affiche le lien complet de chaque groupe, copiable en un clic. Le couple transmet ce lien à qui s'occupe de l'impression du faire-part, qui génère le QR code de son côté.
 
 ---
 
@@ -99,9 +122,8 @@ Le nombre de chansons sélectionnables est centralisé dans `app/lib/rsvpConfig.
 Chaque page bénéficie d'une configuration SEO complète :
 
 - Balises `<title>` et `<meta description>` uniques par page (API `Metadata` de Next.js)
-- **Open Graph** et **Twitter Cards** (image à ajouter — voir § À faire)
 - **JSON-LD `Event`** (`app/components/seo/EventJsonLd.tsx`), branché sur `app/content/site.ts`
-- **Sitemap.xml** (`app/sitemap.ts`) et **robots.txt** (`app/robots.ts`), avec exclusion de `/global-color`
+- **Sitemap.xml** (`app/sitemap.ts`) et **robots.txt** (`app/robots.ts`) — `/global-color`, `/dashboard` et `/confirmation` exclus de l'indexation (un lien d'invitation ne doit jamais apparaître dans un moteur de recherche)
 - Sémantique HTML correcte (`<main>`, `<section>`, `<article>`, `<nav>`, headings hiérarchiques)
 - Performances optimisées : `next/image`, `next/font`, lazy loading
 
@@ -146,10 +168,22 @@ app/
 ├── our-story/page.tsx
 ├── details/page.tsx
 ├── confirmation/
-│   ├── page.tsx                        ← Server Component, charge les Song via Prisma
-│   ├── confirmation.tsx                ← 'use client', wizard 2 étapes
-│   ├── action.ts                       ← 'use server', validation Zod + écriture Prisma
-│   └── loading.tsx
+│   ├── action.ts                       ← 'use server', confirmGroup (sécurisée par token)
+│   └── [token]/
+│       ├── page.tsx                    ← Server Component, charge Group + Guest + Song via Prisma
+│       └── confirmation.tsx            ← 'use client', wizard de confirmation par groupe
+├── dashboard/
+│   ├── page.tsx                        ← Consultation (stats, table, lien copiable)
+│   ├── CopyLinkButton.tsx
+│   ├── login/
+│   │   ├── page.tsx
+│   │   ├── LoginForm.tsx
+│   │   └── actions.ts                  ← 'use server', login / logout (JWT)
+│   └── groups/
+│       ├── actions.ts                  ← 'use server', createGroup
+│       └── new/
+│           ├── page.tsx
+│           └── NewGroupForm.tsx
 ├── global-color/page.tsx               ← Dev only, exclu de la prod et du sitemap
 ├── components/
 │   ├── layout/
@@ -162,7 +196,7 @@ app/
 ├── lib/
 │   ├── colorConfig.ts
 │   ├── db.ts                           ← Singleton PrismaClient (driver adapter SQLite)
-│   └── rsvpConfig.ts                   ← MAX_SONGS, partagé client/serveur
+│   └── session.tsx                     ← Signature/vérification JWT (jose)
 ├── generated/
 │   └── prisma/                         ← ⚠️ Généré, jamais commité (voir § Démarrage)
 └── types/
@@ -170,8 +204,8 @@ app/
     └── content.ts
 
 prisma/
-├── schema.prisma                       ← Modèles Song, Rsvp, RsvpSong
-├── seed.ts                             ← ⚠️ Liste de chansons placeholder
+├── schema.prisma                       ← Modèles Group, Guest, Song, GuestSong
+├── seed.ts                             ← ⚠️ Liste de chansons placeholder, idempotent
 ├── migrations/
 └── dev.db                              ← Généré localement, jamais commité
 
@@ -181,6 +215,7 @@ public/
 
 prisma.config.ts
 next.config.ts                          ← output: 'standalone' (Docker-ready)
+proxy.ts                                ← Protège /dashboard (anciennement middleware.ts)
 .env.example
 ```
 
@@ -188,29 +223,36 @@ next.config.ts                          ← output: 'standalone' (Docker-ready)
 
 ## 🚀 Démarrage rapide
 
+> ⚠️ **Ordre important** : le script `postinstall` exécute `prisma generate`, qui échoue sans `DATABASE_URL`. Le fichier `.env` doit donc exister **avant** `npm install`.
+
 ```bash
-# Installation (régénère automatiquement le client Prisma via postinstall)
+# 1. Variables d'environnement — à faire EN PREMIER
+cp .env.example .env
+# → renseigner DATABASE_URL, DASHBOARD_USER, DASHBOARD_PASSWORD, SESSION_SECRET
+
+# 2. Installation (régénère automatiquement le client Prisma via postinstall)
 npm install
 
-# Variables d'environnement
-cp .env.example .env
-# → renseigner DATABASE_URL="file:./prisma/dev.db"
-
-# Base de données : applique les migrations existantes
+# 3. Base de données : applique les migrations existantes
 npx prisma migrate dev
 
-# Peuple la table Song avec la liste de chansons
+# 4. Peuple la table Song avec la liste de chansons (idempotent — rejouable sans doublon)
 npm run db:seed
 
-# Développement (avec outil de personnalisation des couleurs actif)
+# 5. Développement (avec outil de personnalisation des couleurs actif)
 npm run dev
 
-# Build production (sans /global-color, ColorCustomizer désactivé)
+# 6. Build production (sans /global-color, ColorCustomizer désactivé)
 npm run build
 npm start
 ```
 
-> ⚠️ **Piège courant** : `app/generated/prisma/` (client Prisma généré) est dans `.gitignore` et n'est **jamais commité**. Si les données du formulaire RSVP semblent ne pas s'enregistrer sans aucune erreur visible côté client, vérifie d'abord les logs du terminal `npm run dev` et régénère le client :
+Génère une valeur sûre pour `SESSION_SECRET` :
+```bash
+openssl rand -base64 32
+```
+
+> ⚠️ **Piège courant** : `app/generated/prisma/` (client Prisma généré) est dans `.gitignore` et n'est **jamais commité**. Après tout changement de `prisma/schema.prisma`, régénère-le :
 > ```bash
 > rm -rf app/generated/prisma .next
 > npx prisma generate
@@ -223,14 +265,23 @@ npm start
 Le projet est **prêt pour un conteneur Docker**, mais aucune configuration Docker (Dockerfile, docker-compose) n'est de la responsabilité de ce dépôt — elle est gérée en aval par l'équipe DevOps. Ce qui est déjà en place côté code :
 
 - `next.config.ts` en `output: 'standalone'` (image minimale)
-- `DATABASE_URL` entièrement configurable par variable d'environnement (jamais en dur dans le code)
+- `DATABASE_URL` et tous les secrets (`DASHBOARD_USER`, `DASHBOARD_PASSWORD`, `SESSION_SECRET`) entièrement configurables par variable d'environnement — jamais en dur dans le code
 - Le fichier SQLite (`*.db`) et `.env` sont exclus du build (`.gitignore`)
-- `postinstall: "prisma generate"` dans `package.json` — le client Prisma est toujours régénéré après `npm install`, quel que soit l'environnement
+- `postinstall: "prisma generate"` dans `package.json` — le client Prisma est toujours régénéré après `npm install`/`npm ci`, quel que soit l'environnement
+- `prisma` (le CLI) est en `devDependencies` — seuls `@prisma/client` et l'adapter SQLite sont nécessaires à l'exécution en prod
 
-**Commande à exécuter au démarrage du conteneur** (à la charge du DevOps, mentionnée ici pour information) :
+**Séquence validée pour le déploiement** (à la charge du DevOps, mentionnée ici pour information) :
 ```bash
+cp .env.example .env   # puis configurer les vraies valeurs
+npm ci
 npx prisma migrate deploy
+npm run db:seed
+npm run build
 ```
+
+> ⚠️ Ne pas lancer `npm audit fix --force` sur ce projet : npm peut proposer un downgrade de Prisma vers une version majeure incompatible avec `@prisma/adapter-better-sqlite3` (API différente entre Prisma 6 et 7). Toute mise à jour de dépendance sensible (Next.js, Prisma) doit être testée manuellement avant d'être appliquée.
+
+**Environnement validé** : Node.js 22.x, Next.js 16.3.8, Prisma 7.9.1, SQLite.
 
 ---
 
