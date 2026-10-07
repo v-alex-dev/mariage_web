@@ -4,7 +4,11 @@ import { prisma } from '@/app/lib/db';
 import { CONFIRMATION } from '@/app/content/confirmation';
 import ConfirmationForm from './confirmation';
 
-export const metadata: Metadata = { robots: { index: false, follow: false } };
+export const metadata: Metadata = {
+  title: CONFIRMATION.seo.title,
+  description: CONFIRMATION.seo.description,
+  robots: { index: false, follow: false },
+};
 
 export default async function ConfirmationPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
