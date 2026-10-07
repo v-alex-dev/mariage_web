@@ -20,6 +20,10 @@ interface Group {
   label: string | null;
   guests: Guest[];
 }
+interface GuestAnswer {
+  attending: boolean;
+  songId: number | null;
+}
 
 const initialState: ConfirmGroupState = { status: 'idle' };
 
@@ -35,7 +39,7 @@ export default function ConfirmationForm({
   content: ConfirmationContent;
 }) {
   const [state, dispatch] = useActionState(confirmGroup, initialState);
-  const [answers, setAnswers] = useState(
+  const [answers, setAnswers] = useState<Map<number, GuestAnswer>>(
     () =>
       new Map(
         group.guests.map((g) => [
@@ -49,7 +53,7 @@ export default function ConfirmationForm({
     return <p className="font-serif italic text-lg text-center">{content.success.attending}</p>;
   }
 
-  const update = (guestId: number, patch: Partial<{ attending: boolean; songId: number | null }>) =>
+  const update = (guestId: number, patch: Partial<GuestAnswer>) =>
     setAnswers((prev) => new Map(prev).set(guestId, { ...prev.get(guestId)!, ...patch }));
 
   const handleSubmit = (e: React.FormEvent) => {
