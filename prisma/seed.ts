@@ -15,10 +15,19 @@ const SONGS: { title: string; artist: string }[] = [
 ];
 
 async function main() {
-  for (const song of SONGS) {
-    await prisma.song.create({ data: song });
+  const existing = await prisma.song.findMany({ select: { title: true, artist: true } });
+  const existingKeys = new Set(existing.map((s) => `${s.title}|||${s.artist}`));
+  const toInsert = SONGS.filter((s) => !existingKeys.has(`${s.title}|||${s.artist}`));
+
+  if (toInsert.length === 0) {
+    console.log('ℹ️  Toutes les chansons existent déjà — rien à insérer.');
+    return;
   }
-  console.log(`✅ ${SONGS.length} chansons insérées.`);
+
+  await prisma.song.createMany({ data: toInsert });
+  console.log(
+    `✅ ${toInsert.length} chanson(s) insérée(s) (${SONGS.length - toInsert.length} déjà présente(s)).`
+  );
 }
 
 main()
